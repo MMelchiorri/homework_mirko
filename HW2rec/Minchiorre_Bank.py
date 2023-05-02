@@ -1,6 +1,6 @@
 class Player():
-    def __init__(self, num):
-        self.wallet = 1000
+    def __init__(self, num,wallet_credit):
+        self.wallet = wallet_credit
         self.num = num
         self.debt = {}
         
@@ -31,31 +31,51 @@ def pay_fee(acn, imd_acn, val, fee):
     return (True, 0)
     
         
-def ex1(acn1, acn2, acn3, imd_acn1, imd_acn2, init_amount, transact_log):    
+def ex1(acn1, acn2, acn3, imd_acn1, imd_acn2, init_amount, transact_log):
+    player1 = Player(acn1,init_amount)
+    player2 = Player(acn2,init_amount)
+    player3 = Player(acn3,init_amount)
+
+    #print(player1.num)
+    #print(player2.num)
+    #print(player3.num)      
+      
+    intermediate1 = Intermediate(imd_acn1) 
+    intermediate2 = Intermediate(imd_acn2)  
+
+    player1.debt[intermediate1.num]
+    player1.debt[intermediate2.num]
+
+    print(player1.num)
+
+    #print(intermediate1.num)
+    #print(intermediate2.num)   
+        
     for payment in transact_log:
-        transact(payment[0][0], payment[0][1], payment[1])
-        pay_fee(payment[0][0], payment[2], payment[1], payment[3])
-    return ([acn1.wallet, acn2.wallet, acn3.wallet], [imd_acn1.wallet, imd_acn2.wallet], 
-            [[acn1.debt[imd_acn1.num], acn2.debt[imd_acn1.num], acn3.debt[imd_acn1.num]], 
-            [[acn1.debt[imd_acn2.num], acn2.debt[imd_acn2.num], acn3.debt[imd_acn2.num]]]])    
+        print(payment)
+        if payment[0][0] == player1.num and payment[0][1]==player2.num:
+            transact(player1, player2, payment[1])
+            pay_fee(player1, intermediate1, payment[1], payment[3])
+        elif payment[0][0] == player1.num and payment[0][1]==player3.num:
+            transact(player1, player3, payment[1])
+            pay_fee(player1, intermediate1, payment[1], payment[3])
+        elif payment[0][0] == player2.num and payment[0][1]==player3.num:
+            transact(player2, player3, payment[1])
+            pay_fee(player2, intermediate1, payment[1], payment[3])
+    return ([player1.wallet, player2.wallet, player3.wallet], [intermediate1.wallet, intermediate2.wallet], 
+            [[player1.debt[intermediate1.num], player2.debt[intermediate1.num], player3.debt[intermediate1.num]], 
+            [[player1.debt[intermediate2.num], player2.debt[intermediate2.num], player3.debt[intermediate2.num]]]])    
         
         
             
 if __name__ == '__main__':
         
-    player1 = Player('0x5B23')
-    player2 = Player('0xC78D')
-    player3 = Player('0x44AE')
-      
-    intermediate1 = Intermediate('0x1612') 
-    intermediate2 = Intermediate('0x90FF')     
-    
-    res = ex1(player1.num, player2.num, player3.num, intermediate1.num, intermediate2.num, 1000,
-        [ ((0x44AE, 0x5B23),  800, 0x1612,  4),
-          ((0x44AE, 0xC78D),  800, 0x90FF, 10),
-          ((0xC78D, 0x5B23),  400, 0x1612,  8),
-          ((0x44AE, 0xC78D), 1800, 0x90FF, 12),
-          ((0x5B23, 0x44AE),  100, 0x1612,  2)
+    res = ex1('0x5B23', '0xC78D' , '0x44AE' , '0x1612' , '0x90FF' , 1000 ,
+        [ (('0x44AE', '0x5B23'),  800, '0x1612',  4),
+          (('0x44AE', '0xC78D'),  800, '0x90FF', 10),
+          (('0xC78D', '0x5B23'),  400, '0x1612',  8),
+          (('0x44AE', '0xC78D'), 1800, '0x90FF', 12),
+          (('0x5B23', '0x44AE'),  100, '0x1612',  2)
         ])
     
     print(res)
