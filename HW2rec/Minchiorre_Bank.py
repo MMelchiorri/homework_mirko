@@ -1,70 +1,56 @@
-class Player():
-    def __init__(self, num,wallet_credit):
-        self.wallet = wallet_credit
-        self.num = num
-        self.debt = {}
-        
-class Intermediate():
-    def __init__(self, num):
-        self.wallet = 0
-        self.num = num        
+def pay_taxes(sender,intermediary,amount,commision,imd_accounts,debts,player):
+    print("/**************PAY TAXES**********/")
+    print('pay_taxes_sender',sender)
+    print('pay_taxes_intermediary',intermediary)
+    print('amount',amount)
+    print('pay_taxes_commission',commision)
+    print('dents_sender',imd_accounts)
+    print('debts',debts)
+    print('player',player)
+
+    if(player[sender] < amount+commision and player[sender]>commision):
+        imd_accounts[intermediary] += commision
+        player[sender] -= commision
+    elif player[sender] < amount+commision and player[sender]<commision:
+        imd_accounts[intermediary] += player[sender]
+        debts[intermediary][sender] += commision-player[sender]
+        player[sender]=0
+
+
+
+
+def check_transaction(sender,receiver,amount,intermediary,fee,player_accounts,imd_accounts,debts):
+    print('/********************CHECK TRANSACTIONS**************/')
+
+    commission = (amount * fee) /100
+    print('commission',commission)
+
+    if player_accounts[sender] < commission + amount:
+        pay_taxes(sender,intermediary,amount,commission,imd_accounts,debts,player_accounts)
+        print("Transazione non disponibile")
+    else :
+        print("Transazione Disponibile")
+        player_accounts[receiver] += amount
+        imd_accounts[intermediary] += commission 
+        player_accounts[sender] -= (commission + amount)
    
-def transact(acn1, acn2, val):
-    if acn1.wallet < val:
-        print('Transact not possible!\n')
-        return 
-    acn1.wallet = acn1.wallet - val
-    acn2.wallet = acn2.wallet + val
 
-def pay_fee(acn, imd_acn, val, fee): 
-    new_val = float(val*fee/100)   
-    if acn.wallet < new_val:
-        imd_acn.wallet += acn.wallet
-        remaining_fee = new_val - acn.wallet
-        acn.wallet = 0 
-        if acn.debt[imd_acn.num] in acn.debt:
-            acn.debt[imd_acn.num] = remaining_fee
-        else:
-            acn.debt[imd_acn.num] += remaining_fee
-    acn.wallet = acn.wallet - new_val
-    imd_acn.wallet = imd_acn.wallet + new_val
-    return (True, 0)
-    
-        
+
 def ex1(acn1, acn2, acn3, imd_acn1, imd_acn2, init_amount, transact_log):
-    player1 = Player(acn1,init_amount)
-    player2 = Player(acn2,init_amount)
-    player3 = Player(acn3,init_amount)
+    player_accounts = {acn1: init_amount, acn2: init_amount, acn3: init_amount}
+    imd_accounts = {imd_acn1: 0, imd_acn2: 0}
+    debts = {imd_acn1: {acn1: 0, acn2: 0, acn3: 0}, imd_acn2: {acn1: 0, acn2: 0, acn3: 0}} 
+    for transaction in transact_log:
+        sender, receiver = (transaction[0])
+        amount = transaction[1]
+        intermediary = transaction[2]
+        fee = transaction[3]
+        check_transaction(sender,receiver,amount,intermediary,fee,player_accounts,imd_accounts,debts)
+        print('/********************EX 1**************/')
+        print(player_accounts)
+        print(imd_accounts)
+    return(player_accounts,imd_accounts,debts)
 
-    #print(player1.num)
-    #print(player2.num)
-    #print(player3.num)      
-      
-    intermediate1 = Intermediate(imd_acn1) 
-    intermediate2 = Intermediate(imd_acn2)  
-
-    player1.debt[intermediate1.num]
-    player1.debt[intermediate2.num]
-
-    print(player1.num)
-
-    #print(intermediate1.num)
-    #print(intermediate2.num)   
-        
-    for payment in transact_log:
-        print(payment)
-        if payment[0][0] == player1.num and payment[0][1]==player2.num:
-            transact(player1, player2, payment[1])
-            pay_fee(player1, intermediate1, payment[1], payment[3])
-        elif payment[0][0] == player1.num and payment[0][1]==player3.num:
-            transact(player1, player3, payment[1])
-            pay_fee(player1, intermediate1, payment[1], payment[3])
-        elif payment[0][0] == player2.num and payment[0][1]==player3.num:
-            transact(player2, player3, payment[1])
-            pay_fee(player2, intermediate1, payment[1], payment[3])
-    return ([player1.wallet, player2.wallet, player3.wallet], [intermediate1.wallet, intermediate2.wallet], 
-            [[player1.debt[intermediate1.num], player2.debt[intermediate1.num], player3.debt[intermediate1.num]], 
-            [[player1.debt[intermediate2.num], player2.debt[intermediate2.num], player3.debt[intermediate2.num]]]])    
         
         
             
@@ -78,4 +64,6 @@ if __name__ == '__main__':
           (('0x5B23', '0x44AE'),  100, '0x1612',  2)
         ])
     
-    print(res)
+    print('result',res)
+    
+    
