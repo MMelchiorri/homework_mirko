@@ -1,53 +1,53 @@
-def pay_debts(receiver,player_accounts,imd_accounts,debts):
-    print("/**************DEBTS**********/")
-    max_debts = 0
-    intermediary =""
-    print(receiver)
-    print(player_accounts)
-    print(imd_accounts)
-    print(debts)
-    for key in debts.keys():
-        print(key)
-        if max_debts < debts[key][receiver]:
-            max_debts = debts[key][receiver]
-            intermediary=key
-            print('dentro if',intermediary)
-    
-    if intermediary != '':
-        debts[intermediary][receiver] -= player_accounts[receiver]
-        
-    #print(receiver,intermediary,max_debts)
+def pay_debts(receiver,player_accounts,imd_accounts):
+    '''print("/**************DEBTS**********/")'''
+    dict_of_occurenceris = {}
+    for value in player_accounts[receiver][1].values():
+        if value !=0 and value not in dict_of_occurenceris.keys():
+            dict_of_occurenceris[value] = 1
+        elif value in dict_of_occurenceris.keys():
+            dict_of_occurenceris[value] += 1
 
-        
+    for imd_keys in player_accounts[receiver][1].keys():
+        for imd_debts in player_accounts[receiver][1].values():
+            if imd_debts in dict_of_occurenceris.keys():
+                if player_accounts[receiver][0] <=0 or player_accounts[receiver][1][imd_keys] ==0:
+                    print()
+                else:
+                    player_accounts[receiver][1][imd_keys] -= player_accounts[receiver][0] / dict_of_occurenceris[imd_debts]
+                    player_accounts[receiver][0] -= player_accounts[receiver][0] / dict_of_occurenceris[imd_debts]
+
+    print(player_accounts)
+
+
 
 
 def pay_taxes(sender,intermediary,amount,commision,imd_accounts,debts,player):
-    if(player[sender] < amount+commision and player[sender]>commision):
+    if(player[sender][0] < amount+commision and player[sender][0]>commision):
         imd_accounts[intermediary] += commision
-        player[sender] -= commision
-    elif player[sender] < amount+commision and player[sender]<commision:
-        imd_accounts[intermediary] += player[sender]
-        debts[intermediary][sender] += commision-player[sender]
-        player[sender]=0
+        player[sender][0] -= commision
+    elif player[sender][0] < amount+commision and player[sender][0]<commision:
+        imd_accounts[intermediary] += player[sender][0]
+        player[sender][1][intermediary]+= commision-player[sender][0]
+        debts[intermediary][sender] += commision-player[sender][0]
+        player[sender][0]=0
 
 
 
 
 def check_transaction(sender,receiver,amount,intermediary,fee,player_accounts,imd_accounts,debts):
-
     commission = (amount * fee) /100
-    if player_accounts[sender] < commission + amount:
+    if player_accounts[sender][0] < commission + amount:
         pay_taxes(sender,intermediary,amount,commission,imd_accounts,debts,player_accounts)
     else :
-        player_accounts[receiver] += amount
+        player_accounts[receiver][0] += amount
         imd_accounts[intermediary] += commission 
-        player_accounts[sender] -= (commission + amount)
-        pay_debts(receiver,player_accounts,imd_accounts,debts)
+        player_accounts[sender][0] -= (commission + amount)
+        pay_debts(receiver,player_accounts,imd_accounts)
 
 
 
 def ex1(acn1, acn2, acn3, imd_acn1, imd_acn2, init_amount, transact_log):
-    player_accounts = {acn1: init_amount, acn2: init_amount, acn3: init_amount}
+    player_accounts = {acn1: [init_amount,{imd_acn1:0,imd_acn2:0}], acn2: [init_amount,{imd_acn1:0,imd_acn2:0}], acn3: [init_amount,{imd_acn1:0,imd_acn2:0}]}
     imd_accounts = {imd_acn1: 0, imd_acn2: 0}
     debts = {imd_acn1: {acn1: 0, acn2: 0, acn3: 0}, imd_acn2: {acn1: 0, acn2: 0, acn3: 0}} 
     for transaction in transact_log:
