@@ -99,6 +99,42 @@ e con i parametri dinamici (https://pyformat.info/#param_align).
 import json
 
 def media_studente(stud_code, dbsize):
+    sum_of_votes=0
+    sum_of_exam=0
+    match dbsize:
+        case 'small':
+           
+            with open('./small_exams.json') as file_exam:
+                data_exams = json.load(file_exam)
+                #print('courses',data_courses)
+        
+            for i in range(len(data_exams)):
+                if stud_code==data_exams[i]['stud_code']:
+                    sum_of_votes += data_exams[i]['grade']
+                    sum_of_exam += 1
+            return round((sum_of_votes/sum_of_exam),2)
+            
+        case 'medium':
+              with open('./medium_exams.json') as file_exam:
+                data_exams = json.load(file_exam)
+                #print('courses',data_courses)
+        
+              for i in range(len(data_exams)):
+                if stud_code==data_exams[i]['stud_code']:
+                    sum_of_votes += data_exams[i]['grade']
+                    sum_of_exam += 1
+              return round((sum_of_votes/sum_of_exam),2)
+        case 'large':
+          
+            with open('./large_exams.json') as file_exam:
+                data_exams = json.load(file_exam)
+                
+            for i in range(len(data_exams)):
+              if stud_code == data_exams[i]['stud_code']:
+                sum_of_votes += data_exams[i]['grade']
+                sum_of_exam += 1
+            return round((sum_of_votes/sum_of_exam),2)
+
     pass
 
 def media_corso(course_code, dbsize):
@@ -120,3 +156,14 @@ def stampa_studenti_brillanti(dbsize, fileout):
     pass
 
 
+small_value = media_studente('1803891','small')
+
+medium_value = media_studente('1512987','medium')
+
+large_value = media_studente('1654889','large')
+
+print('small ',small_value)
+
+print('medium ',medium_value)
+
+print('large ', large_value)
