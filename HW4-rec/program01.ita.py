@@ -105,9 +105,7 @@ def media_studente(stud_code, dbsize):
         case 'small':
            
             with open('./small_exams.json') as file_exam:
-                data_exams = json.load(file_exam)
-                #print('courses',data_courses)
-        
+                data_exams = json.load(file_exam)        
             for i in range(len(data_exams)):
                 if stud_code==data_exams[i]['stud_code']:
                     sum_of_votes += data_exams[i]['grade']
@@ -117,8 +115,6 @@ def media_studente(stud_code, dbsize):
         case 'medium':
               with open('./medium_exams.json') as file_exam:
                 data_exams = json.load(file_exam)
-                #print('courses',data_courses)
-        
               for i in range(len(data_exams)):
                 if stud_code==data_exams[i]['stud_code']:
                     sum_of_votes += data_exams[i]['grade']
@@ -127,8 +123,7 @@ def media_studente(stud_code, dbsize):
         case 'large':
           
             with open('./large_exams.json') as file_exam:
-                data_exams = json.load(file_exam)
-                
+                data_exams = json.load(file_exam) 
             for i in range(len(data_exams)):
               if stud_code == data_exams[i]['stud_code']:
                 sum_of_votes += data_exams[i]['grade']
@@ -138,9 +133,66 @@ def media_studente(stud_code, dbsize):
     pass
 
 def media_corso(course_code, dbsize):
+    sum_of_votes=0
+    sum_of_exam=0
+    match dbsize:
+        case 'small':
+          with open('./small_exams.json') as file_exam:
+              data_exam = json.load(file_exam)
+          with open('./small_students.json') as file_students:
+              data_student = json.load(file_students)
+          for i in range(len(data_student)):
+              for j in range(len(data_exam)):
+                  if data_exam[j]['stud_code'] == data_student[i]['stud_code'] and data_exam[j]['course_code']==course_code:
+                      sum_of_votes += data_exam[j]['grade']
+                      sum_of_exam +=1
+          if sum_of_exam==0:
+             print("Course not existed or no one does this exam")
+             return
+                        
+          return round((sum_of_votes/sum_of_exam),2)      
+        case 'medium':
+              with open('./medium_exams.json') as file_exam:
+                data_exam = json.load(file_exam)
+              with open('./medium_students.json') as file_students:
+                data_student = json.load(file_students)
+              for i in range(len(data_student)):
+                for j in range(len(data_exam)):
+                  if data_exam[j]['stud_code'] == data_student[i]['stud_code'] and data_exam[j]['course_code']==course_code:
+                      sum_of_votes += data_exam[j]['grade']
+                      sum_of_exam +=1
+              if sum_of_votes==0:
+                 print("I'm in medium and this course not existed or no one does this exam")
+                 return
+              return round((sum_of_votes/sum_of_exam),2)   
+        case 'large':
+              with open('./large_exams.json') as file_exam:
+                data_exam = json.load(file_exam)
+              with open('./large_students.json') as file_students:
+                data_student = json.load(file_students)
+              for i in range(len(data_student)):
+                for j in range(len(data_exam)):
+                  if data_exam[j]['stud_code'] == data_student[i]['stud_code'] and data_exam[j]['course_code']==course_code:
+                      sum_of_votes += data_exam[j]['grade']
+                      sum_of_exam +=1
+              if(sum_of_exam==0):
+                 print("I'm in large and this course not existed or no one does this exam")
+                 return
+              return round((sum_of_votes/sum_of_exam),2)          
     pass
 
 def media_docente(teach_code, dbsize):
+    match dbsize:
+       case 'small':
+          with open('./small_teachers.json') as file_teachers:
+             data_teachers = json.load(file_teachers)
+          
+          with open('./small_courses.json') as file_courses:
+             data_courses = json.load(file_courses)
+
+          with open('./small_exams.json') as file_exams:
+
+
     pass
 
 def studenti_brillanti(dbsize):
@@ -155,15 +207,36 @@ def stampa_esami_sostenuti(stud_code, dbsize, fileout):
 def stampa_studenti_brillanti(dbsize, fileout):
     pass
 
-
+# media studente
+'''
 small_value = media_studente('1803891','small')
 
 medium_value = media_studente('1512987','medium')
 
 large_value = media_studente('1654889','large')
 
-print('small ',small_value)
+print('small media studente ',small_value)
 
-print('medium ',medium_value)
+print('medium media studente',medium_value)
 
-print('large ', large_value)
+print('large media studente', large_value)'''
+
+# media corso
+
+'''
+
+small_value = media_corso('EDIELFAC0x5203a7','small')
+
+medium_value = media_corso('TDC0x4003e','medium')
+
+large_value = media_corso('IDMESAM0xb22d4c','large')
+
+print('small media corso ',small_value)
+
+print('medium media corso ',medium_value)
+
+print('large media corso ',large_value)
+
+'''
+
+# media docente
