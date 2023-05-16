@@ -182,15 +182,53 @@ def media_corso(course_code, dbsize):
     pass
 
 def media_docente(teach_code, dbsize):
+    sum_of_votes=0
+    sum_of_exam=0
     match dbsize:
        case 'small':
-          with open('./small_teachers.json') as file_teachers:
-             data_teachers = json.load(file_teachers)
-          
           with open('./small_courses.json') as file_courses:
              data_courses = json.load(file_courses)
-
           with open('./small_exams.json') as file_exams:
+             data_exams = json.load(file_exams)
+          for i in range(len(data_courses)):
+             if teach_code==data_courses[i]['teach_code']:
+                for j in range(len(data_exams)):
+                   if data_courses[i]['course_code']==data_exams[j]['course_code']:
+                      sum_of_votes+= data_exams[j]['grade']
+                      sum_of_exam +=1
+                if sum_of_exam==0:
+                   print("No exam has been sustaneid from student or this professor not exist")
+          return round((sum_of_votes/sum_of_exam),2) 
+       case 'medium':
+        with open('./medium_courses.json') as file_courses:
+             data_courses = json.load(file_courses)
+        with open('./medium_exams.json') as file_exams:
+             data_exams = json.load(file_exams)
+        for i in range(len(data_courses)):
+          if teach_code==data_courses[i]['teach_code']:
+                print(data_courses[i]['course_code'])
+                for j in range(len(data_exams)):
+                   if data_courses[i]['course_code']==data_exams[j]['course_code']:
+                      sum_of_votes+= data_exams[j]['grade']
+                      sum_of_exam +=1
+                if sum_of_exam==0:
+                   print("No exam has been sustaneid from student or this professor not exist")
+        return round((sum_of_votes/sum_of_exam),2) 
+       case 'large':
+        with open('./large_courses.json') as file_courses:
+             data_courses = json.load(file_courses)
+        with open('./large_exams.json') as file_exams:
+             data_exams = json.load(file_exams)
+        for i in range(len(data_courses)):
+          if teach_code==data_courses[i]['teach_code']:
+                for j in range(len(data_exams)):
+                   if data_courses[i]['course_code']==data_exams[j]['course_code']:
+                      sum_of_votes+= data_exams[j]['grade']
+                      sum_of_exam +=1
+                if sum_of_exam==0:
+                   print("No exam has been sustaneid from student or this professor not exist")
+        return round((sum_of_votes/sum_of_exam),2) 
+           
 
 
     pass
@@ -240,3 +278,15 @@ print('large media corso ',large_value)
 '''
 
 # media docente
+
+small_value = media_docente('003',"small")
+
+print('small media docente', small_value)
+
+medium_value = media_docente('0010',"medium")
+
+print('medium media docente', medium_value)
+
+large_value = media_docente('00015',"large")
+
+print('large media docente', large_value)
