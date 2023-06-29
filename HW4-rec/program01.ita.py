@@ -234,6 +234,26 @@ def media_docente(teach_code, dbsize):
     pass
 
 def studenti_brillanti(dbsize):
+    index_student =0
+    with open('./small_students.json') as file_students:
+      data_student = json.load(file_students)
+      list_student = [None] * len(data_student)
+      for i in range(len(data_student)):
+        value = media_studente(data_student[i]['stud_code'],dbsize)
+        if(value >=28):
+          print('sono in maggiore uguale 28', value)
+          obj_student  = {'stud_code':data_student[i]['stud_code'],'avg_score':value}
+          list_student[index_student]= {'stud_code':data_student[i]['stud_code'],'avg_score':value}
+          index_student +=1
+
+    list_student = list_student[:index_student]
+    for i in range(0,len(list_student)-1):
+      for j in range(1,len(list_student)-1):
+        if list_student[i]['avg_score'] > list_student[j]['avg_score']:
+          temp = list_student[i]['avg_score']
+          list_student[i]['avg_score']=list_student[j]['avg_score']
+          list_student[j]['avg_score']=temp
+    print(list_student)
     pass
 
 def stampa_verbale(exam_code, dbsize, fileout):
@@ -244,6 +264,7 @@ def stampa_esami_sostenuti(stud_code, dbsize, fileout):
 
 def stampa_studenti_brillanti(dbsize, fileout):
     pass
+
 
 # media studente
 '''
@@ -279,14 +300,22 @@ print('large media corso ',large_value)
 
 # media docente
 
-small_value = media_docente('003',"small")
+'''
 
-print('small media docente', small_value)
+small_value_media_docente = media_docente('003',"small")
 
-medium_value = media_docente('0010',"medium")
+print('small media docente', small_value_media_docente)
 
-print('medium media docente', medium_value)
+medium_value_media_docente = media_docente('0010',"medium")
 
-large_value = media_docente('00015',"large")
+print('medium media docente', medium_value_media_docente)
 
-print('large media docente', large_value)
+large_value_media_docente = media_docente('00015',"large")
+
+print('large media docente', large_value_media_docente)
+
+'''
+
+# studenti brillanti
+
+studenti_brillanti("small")
