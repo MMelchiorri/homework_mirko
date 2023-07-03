@@ -241,18 +241,18 @@ def studenti_brillanti(dbsize):
       for i in range(len(data_student)):
         value = media_studente(data_student[i]['stud_code'],dbsize)
         if(value >=28):
-          print('sono in maggiore uguale 28', value)
-          obj_student  = {'stud_code':data_student[i]['stud_code'],'avg_score':value}
-          list_student[index_student]= {'stud_code':data_student[i]['stud_code'],'avg_score':value}
+          obj_student  = {'stud_code':data_student[i]['stud_code'],'avg_score':value,'stud_name':data_student[i]['stud_name'],'stud_surname':data_student[i]['stud_surname']}
+          list_student[index_student]= obj_student
           index_student +=1
-
     list_student = list_student[:index_student]
-    for i in range(0,len(list_student)-1):
-      for j in range(1,len(list_student)-1):
-        if list_student[i]['avg_score'] > list_student[j]['avg_score']:
-          temp = list_student[i]['avg_score']
-          list_student[i]['avg_score']=list_student[j]['avg_score']
-          list_student[j]['avg_score']=temp
+    for i in range(0,len(list_student)):
+       for j in range(i+1,len(list_student)):
+          if(list_student[i]['avg_score']<list_student[j]['avg_score']):
+             temp = list_student[i]['avg_score']
+             list_student[i]['avg_score']=list_student[j]['avg_score']
+             list_student[j]['avg_score']=temp
+
+       
     print(list_student)
     pass
 
