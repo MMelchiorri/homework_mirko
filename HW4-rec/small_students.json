@@ -124,5 +124,17 @@
   "stud_name": "Maximilian",
   "stud_surname": "Piatti",
   "stud_email": "1273288_mp@small.it"
- }
+ },
+ {
+    "stud_code": "87654321",
+    "stud_name": "Alessandro",
+    "stud_surname": "Iacometti",
+    "stud_email": "87654321_ai@small.it"
+   },
+   {
+    "stud_code": "12345678",
+    "stud_name": "Marco",
+    "stud_surname": "Baldassarre",
+    "stud_email": "12345678_mb@small.it"
+   }
 ]

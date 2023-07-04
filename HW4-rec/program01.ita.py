@@ -97,6 +97,7 @@ i modificatori per l'allineamento (https://pyformat.info/#string_pad_align)
 e con i parametri dinamici (https://pyformat.info/#param_align).
 """
 import json
+from pprint import pprint
 
 def media_studente(stud_code, dbsize):
     sum_of_votes=0
@@ -234,27 +235,82 @@ def media_docente(teach_code, dbsize):
     pass
 
 def studenti_brillanti(dbsize):
-    index_student =0
-    with open('./small_students.json') as file_students:
-      data_student = json.load(file_students)
-      list_student = [None] * len(data_student)
-      for i in range(len(data_student)):
-        value = media_studente(data_student[i]['stud_code'],dbsize)
-        if(value >=28):
-          obj_student  = {'stud_code':data_student[i]['stud_code'],'avg_score':value,'stud_name':data_student[i]['stud_name'],'stud_surname':data_student[i]['stud_surname']}
-          list_student[index_student]= obj_student
-          index_student +=1
-    list_student = list_student[:index_student]
-    for i in range(0,len(list_student)):
-       for j in range(i+1,len(list_student)):
-          if(list_student[i]['avg_score']<list_student[j]['avg_score']):
-             temp = list_student[i]['avg_score']
-             list_student[i]['avg_score']=list_student[j]['avg_score']
-             list_student[j]['avg_score']=temp
+    index_student = 0
 
-       
-    print(list_student)
+    match dbsize:
+        case 'small':
+            with open('./small_students.json') as file_students:
+                data_student = json.load(file_students)
+            list_student = [None] * len(data_student)
+            for i in range(len(data_student)):
+                value = media_studente(data_student[i]['stud_code'], dbsize)
+                if value >= 28:
+                    obj_student = {
+                        'stud_code': data_student[i]['stud_code'],
+                        'avg_score': value,
+                        'stud_name': data_student[i]['stud_name'],
+                        'stud_surname': data_student[i]['stud_surname']
+                    }
+                    list_student[index_student] = obj_student
+                    index_student += 1
+
+        case 'medium':
+            with open('./medium_students.json') as file_students:
+                data_student = json.load(file_students)
+            list_student = [None] * len(data_student)
+            for i in range(len(data_student)):
+                value = media_studente(data_student[i]['stud_code'], dbsize)
+                if value >= 28:
+                    obj_student = {
+                        'stud_code': data_student[i]['stud_code'],
+                        'avg_score': value,
+                        'stud_name': data_student[i]['stud_name'],
+                        'stud_surname': data_student[i]['stud_surname']
+                    }
+                    list_student[index_student] = obj_student
+                    index_student += 1
+
+        case 'large':
+            with open('./large_students.json') as file_students:
+                data_student = json.load(file_students)
+            list_student = [None] * len(data_student)
+            for i in range(len(data_student)):
+                value = media_studente(data_student[i]['stud_code'], dbsize)
+                if value >= 28:
+                    obj_student = {
+                        'stud_code': data_student[i]['stud_code'],
+                        'avg_score': value,
+                        'stud_name': data_student[i]['stud_name'],
+                        'stud_surname': data_student[i]['stud_surname']
+                    }
+                    list_student[index_student] = obj_student
+                    index_student += 1
+
+    list_student = list_student[:index_student]
+    for i in range(0, len(list_student)):
+        for j in range(i + 1, len(list_student)):
+            if list_student[i]['avg_score'] < list_student[j]['avg_score']:
+                temp = list_student[i]
+                list_student[i] = list_student[j]
+                list_student[j] = temp
+
+            if (list_student[i]['avg_score'] == list_student[j]['avg_score'] and
+                    list_student[i]['stud_surname'] > list_student[j]['stud_surname']):
+                temp = list_student[i]
+                list_student[i] = list_student[j]
+                list_student[j] = temp
+
+            if (list_student[i]['avg_score'] == list_student[j]['avg_score'] and
+                    list_student[i]['stud_surname'] == list_student[j]['stud_surname'] and
+                    list_student[i]['stud_name'] > list_student[j]['stud_name']):
+                temp = list_student[i]
+                list_student[i] = list_student[j]
+                list_student[j] = temp
+
+    pprint(list_student)
     pass
+
+
 
 def stampa_verbale(exam_code, dbsize, fileout):
     pass
@@ -318,4 +374,8 @@ print('large media docente', large_value_media_docente)
 
 # studenti brillanti
 
-studenti_brillanti("small")
+#studenti_brillanti("small")
+
+#studenti_brillanti("medium")
+
+#studenti_brillanti("large")
